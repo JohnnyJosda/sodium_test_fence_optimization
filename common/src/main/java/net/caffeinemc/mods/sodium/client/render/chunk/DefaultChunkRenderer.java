@@ -30,7 +30,7 @@ import java.util.Iterator;
 
 public class DefaultChunkRenderer extends ShaderChunkRenderer {
     private final SharedQuadIndexBuffer sharedIndexBuffer;
-    private boolean renderNewModels = true;
+    private boolean renderNewModels = false;
     private long fence;
     private ChunkShaderInterface oldShader;
     private CameraTransform oldCamera;
@@ -115,18 +115,18 @@ public class DefaultChunkRenderer extends ShaderChunkRenderer {
             if (renderNewModels) {
                 setModelMatrixUniforms(shader, region, camera);
                 executeDrawBatch(commandList, tessellation, batch);
+                GL32C.glDeleteSync(fence);
+                fence = 0;
+                oldShader = shader;
+                oldCamera = camera;
+                oldRegion = region;
+                oldCommandList = commandList;
+                oldTessellation = tessellation;
+                oldBatch = batch;
             }else{
                 setModelMatrixUniforms(oldShader, oldRegion, oldCamera);
                 executeDrawBatch(oldCommandList, oldTessellation, oldBatch);
             }
-            GL32C.glDeleteSync(fence);
-            fence = 0;
-            oldShader = shader;
-            oldCamera = camera;
-            oldRegion = region;
-            oldCommandList = commandList;
-            oldTessellation = tessellation;
-            oldBatch = batch;
         }
 
         super.end(renderPass);
