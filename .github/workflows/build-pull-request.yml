@@ -2,7 +2,8 @@
 # We don't want to publish build artifacts or expose our other caches to possibly untrusted code
 name: build-pull-request
 
-on: [ pull_request ]
+on:
+ workflow_dispatch:
 
 jobs:
   build:
